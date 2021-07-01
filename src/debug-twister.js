@@ -1,3 +1,4 @@
+import { logWrap } from "./trace"
 // This is a nearly 1:1 port of fast-twister
 // A few small modifications were made, in order to:
 // 1. add conditional logging
@@ -97,7 +98,7 @@ const MATRIX_A = 0x9908b0df
 const UPPER_MASK = 0x80000000
 const LOWER_MASK = 0x7fffffff
 
-function twist(state) {
+const twist = logWrap("twisterTwist", function _twist(state) {
   let bits
 
   for (let i = 0; i < DIFF; i++) {
@@ -113,77 +114,86 @@ function twist(state) {
   state[N_MINUS_1] = state[M_MINUS_1] ^ (bits >>> 1) ^ ((bits & 1) * MATRIX_A)
 
   return state
-}
+})
 
-function initializeWithArray(seedArray) {
-  const state = initializeWithNumber(19650218)
-  const len = seedArray.length
+const initializeWithArray = logWrap(
+  "twisterInitArray",
+  function _initializeWithArray(seedArray) {
+    const state = initializeWithNumber(19650218)
+    const len = seedArray.length
 
-  let i = 1
-  let j = 0
-  let k = N > len ? N : len
+    let i = 1
+    let j = 0
+    let k = N > len ? N : len
 
-  for (; k; k--) {
-    const s = state[i - 1] ^ (state[i - 1] >>> 30)
-    state[i] =
-      (state[i] ^
-        (((((s & 0xffff0000) >>> 16) * 1664525) << 16) +
-          (s & 0x0000ffff) * 1664525)) +
-      seedArray[j] +
-      j
-    i++
-    j++
-    if (i >= N) {
-      state[0] = state[N_MINUS_1]
-      i = 1
+    for (; k; k--) {
+      const s = state[i - 1] ^ (state[i - 1] >>> 30)
+      state[i] =
+        (state[i] ^
+          (((((s & 0xffff0000) >>> 16) * 1664525) << 16) +
+            (s & 0x0000ffff) * 1664525)) +
+        seedArray[j] +
+        j
+      i++
+      j++
+      if (i >= N) {
+        state[0] = state[N_MINUS_1]
+        i = 1
+      }
+      if (j >= len) {
+        j = 0
+      }
     }
-    if (j >= len) {
-      j = 0
+    for (k = N_MINUS_1; k; k--) {
+      const s = state[i - 1] ^ (state[i - 1] >>> 30)
+
+      state[i] =
+        (state[i] ^
+          (((((s & 0xffff0000) >>> 16) * 1566083941) << 16) +
+            (s & 0x0000ffff) * 1566083941)) -
+        i
+      i++
+      if (i >= N) {
+        state[0] = state[N_MINUS_1]
+        i = 1
+      }
     }
-  }
-  for (k = N_MINUS_1; k; k--) {
-    const s = state[i - 1] ^ (state[i - 1] >>> 30)
 
-    state[i] =
-      (state[i] ^
-        (((((s & 0xffff0000) >>> 16) * 1566083941) << 16) +
-          (s & 0x0000ffff) * 1566083941)) -
-      i
-    i++
-    if (i >= N) {
-      state[0] = state[N_MINUS_1]
-      i = 1
+    state[0] = UPPER_MASK
+
+    return state
+  }
+)
+
+const initializeWithNumber = logWrap(
+  "twisterInitNumber",
+  function _initializeWithNumber(seed) {
+    const state = new Array(N)
+
+    // fill initial state
+    state[0] = seed
+    for (let i = 1; i < N; i++) {
+      const s = state[i - 1] ^ (state[i - 1] >>> 30)
+      state[i] =
+        ((((s & 0xffff0000) >>> 16) * 1812433253) << 16) +
+        (s & 0x0000ffff) * 1812433253 +
+        i
     }
+
+    return state
   }
+)
 
-  state[0] = UPPER_MASK
-
-  return state
-}
-
-function initializeWithNumber(seed) {
-  const state = new Array(N)
-
-  // fill initial state
-  state[0] = seed
-  for (let i = 1; i < N; i++) {
-    const s = state[i - 1] ^ (state[i - 1] >>> 30)
-    state[i] =
-      ((((s & 0xffff0000) >>> 16) * 1812433253) << 16) +
-      (s & 0x0000ffff) * 1812433253 +
-      i
+const initialize = logWrap(
+  "twisterInit",
+  function _initialize(seed = Date.now()) {
+    const state = Array.isArray(seed)
+      ? initializeWithArray(seed)
+      : initializeWithNumber(seed)
+    return twist(state)
   }
-
-  return state
-}
-
-function initialize(seed = Date.now()) {
-  const state = Array.isArray(seed)
-    ? initializeWithArray(seed)
-    : initializeWithNumber(seed)
-  return twist(state)
-}
-function MersenneTwister(seed) {
+)
+const MersenneTwister = logWrap("twister", function _MersenneTwister(seed) {
   let state = initialize(seed)
   let next = 0
   const randomInt32 = () => {
@@ -222,6 +232,6 @@ function MersenneTwister(seed) {
   }
 
   return api
-}
+})
 
 export default MersenneTwister

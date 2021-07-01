@@ -116,3 +116,24 @@ console.log(x)
   'w', 'q'
 ] */
 ```
+
+## Debugging
+
+This module ships with an identical but easier-to-debug copy of its core API.
+
+It uses `envtrace` / `debug` under the hood.
+
+To use it, simply change:
+
+```js
+import Unusual from 'unusual'
+```
+to
+```js
+import Unusual from 'unusual/debug'
+```
+instead.
+
+Then in node you can set the `DEBUG='unusual:*'` environment variable (or in browser, you can set: `localStorage.debug = 'unusual:*'`) in order to see per-function logging.
+
+Please see the documentation for [envtrace](https://www.npmjs.com/package/envtrace) and [debug](https://www.npmjs.com/package/debug) for more information.

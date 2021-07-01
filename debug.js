@@ -1,6 +1,28 @@
 'use strict';
 
 var katsuCurry = require('katsu-curry');
+var envtrace = require('envtrace');
+
+const trace = envtrace.complextrace("unusual", [
+  "constructor",
+  "twister",
+  "twisterTwist",
+  "twisterInitArray",
+  "twisterInitNumber",
+  "twisterInit",
+  "random",
+  "integer",
+  "pick",
+  "pickKey",
+  "pickValue",
+  "floor",
+  "floorMin",
+  "shuffle",
+]);
+
+const logWrap = katsuCurry.curry((key, fn, input) =>
+  katsuCurry.pipe(trace[key]("input"), fn, trace[key]("output"))(input)
+);
 
 // This is a nearly 1:1 port of fast-twister
 // A few small modifications were made, in order to:
@@ -101,7 +123,7 @@ const MATRIX_A = 0x9908b0df;
 const UPPER_MASK = 0x80000000;
 const LOWER_MASK = 0x7fffffff;
 
-function twist(state) {
+const twist = logWrap("twisterTwist", function _twist(state) {
   let bits;
 
   for (let i = 0; i < DIFF; i++) {
@@ -117,77 +139,86 @@ function twist(state) {
   state[N_MINUS_1] = state[M_MINUS_1] ^ (bits >>> 1) ^ ((bits & 1) * MATRIX_A);
 
   return state
-}
+});
 
-function initializeWithArray(seedArray) {
-  const state = initializeWithNumber(19650218);
-  const len = seedArray.length;
+const initializeWithArray = logWrap(
+  "twisterInitArray",
+  function _initializeWithArray(seedArray) {
+    const state = initializeWithNumber(19650218);
+    const len = seedArray.length;
 
-  let i = 1;
-  let j = 0;
-  let k = N > len ? N : len;
+    let i = 1;
+    let j = 0;
+    let k = N > len ? N : len;
 
-  for (; k; k--) {
-    const s = state[i - 1] ^ (state[i - 1] >>> 30);
-    state[i] =
-      (state[i] ^
-        (((((s & 0xffff0000) >>> 16) * 1664525) << 16) +
-          (s & 0x0000ffff) * 1664525)) +
-      seedArray[j] +
-      j;
-    i++;
-    j++;
-    if (i >= N) {
-      state[0] = state[N_MINUS_1];
-      i = 1;
+    for (; k; k--) {
+      const s = state[i - 1] ^ (state[i - 1] >>> 30);
+      state[i] =
+        (state[i] ^
+          (((((s & 0xffff0000) >>> 16) * 1664525) << 16) +
+            (s & 0x0000ffff) * 1664525)) +
+        seedArray[j] +
+        j;
+      i++;
+      j++;
+      if (i >= N) {
+        state[0] = state[N_MINUS_1];
+        i = 1;
+      }
+      if (j >= len) {
+        j = 0;
+      }
     }
-    if (j >= len) {
-      j = 0;
+    for (k = N_MINUS_1; k; k--) {
+      const s = state[i - 1] ^ (state[i - 1] >>> 30);
+
+      state[i] =
+        (state[i] ^
+          (((((s & 0xffff0000) >>> 16) * 1566083941) << 16) +
+            (s & 0x0000ffff) * 1566083941)) -
+        i;
+      i++;
+      if (i >= N) {
+        state[0] = state[N_MINUS_1];
+        i = 1;
+      }
     }
-  }
-  for (k = N_MINUS_1; k; k--) {
-    const s = state[i - 1] ^ (state[i - 1] >>> 30);
 
-    state[i] =
-      (state[i] ^
-        (((((s & 0xffff0000) >>> 16) * 1566083941) << 16) +
-          (s & 0x0000ffff) * 1566083941)) -
-      i;
-    i++;
-    if (i >= N) {
-      state[0] = state[N_MINUS_1];
-      i = 1;
+    state[0] = UPPER_MASK;
+
+    return state
+  }
+);
+
+const initializeWithNumber = logWrap(
+  "twisterInitNumber",
+  function _initializeWithNumber(seed) {
+    const state = new Array(N);
+
+    // fill initial state
+    state[0] = seed;
+    for (let i = 1; i < N; i++) {
+      const s = state[i - 1] ^ (state[i - 1] >>> 30);
+      state[i] =
+        ((((s & 0xffff0000) >>> 16) * 1812433253) << 16) +
+        (s & 0x0000ffff) * 1812433253 +
+        i;
     }
+
+    return state
   }
+);
 
-  state[0] = UPPER_MASK;
-
-  return state
-}
-
-function initializeWithNumber(seed) {
-  const state = new Array(N);
-
-  // fill initial state
-  state[0] = seed;
-  for (let i = 1; i < N; i++) {
-    const s = state[i - 1] ^ (state[i - 1] >>> 30);
-    state[i] =
-      ((((s & 0xffff0000) >>> 16) * 1812433253) << 16) +
-      (s & 0x0000ffff) * 1812433253 +
-      i;
+const initialize = logWrap(
+  "twisterInit",
+  function _initialize(seed = Date.now()) {
+    const state = Array.isArray(seed)
+      ? initializeWithArray(seed)
+      : initializeWithNumber(seed);
+    return twist(state)
   }
-
-  return state
-}
-
-function initialize(seed = Date.now()) {
-  const state = Array.isArray(seed)
-    ? initializeWithArray(seed)
-    : initializeWithNumber(seed);
-  return twist(state)
-}
-function MersenneTwister(seed) {
+);
+const MersenneTwister = logWrap("twister", function _MersenneTwister(seed) {
   let state = initialize(seed);
   let next = 0;
   const randomInt32 = () => {
@@ -226,7 +257,7 @@ function MersenneTwister(seed) {
   };
 
   return api
-}
+});
 
 const MAX_INT = 9007199254740992;
 const CONSTANTS = {
@@ -268,12 +299,18 @@ function Unusual(seed) {
     let hash = 0;
     seed.split("").forEach((c, i) => {
       hash = seed.charCodeAt(i) + (hash << 6) + (hash << 16) - hash;
+      trace.constructor("hash", { hash, seedling });
       seedling += hash;
     });
     this.seed += seedling;
   }
+  trace.constructor("seed", this.seed);
   const twister = new MersenneTwister(this.seed);
-  const random = twister.random;
+  const random = () => {
+    const value = twister.random();
+    trace.random("output", value);
+    return value
+  };
 
   function integer({ min, max }) {
     const test = [min, max];
@@ -301,7 +338,9 @@ function Unusual(seed) {
     return Math.floor(random() * x)
   }
   function floorMin(min, x) {
+    trace.floorMin("input", { min, x });
     const output = floor(x) + min;
+    trace.floorMin("output", output);
     return output
   }
   function shuffle(list) {
@@ -317,13 +356,13 @@ function Unusual(seed) {
     return copy
   }
   this.random = random;
-  this.integer = integer;
-  this.pick = pick;
-  this.pickKey = pickKey;
-  this.pickValue = pickValue;
-  this.floor = floor;
+  this.integer = logWrap("integer", integer);
+  this.pick = logWrap("pick", pick);
+  this.pickKey = logWrap("pickKey", pickKey);
+  this.pickValue = logWrap("pickValue", pickValue);
+  this.floor = logWrap("floor", floor);
   this.floorMin = katsuCurry.curry(floorMin);
-  this.shuffle = shuffle;
+  this.shuffle = logWrap("shuffle", shuffle);
   return this
 }
 

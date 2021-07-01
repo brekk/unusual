@@ -1,5 +1,6 @@
 import { curry } from "katsu-curry"
-import Twister from "./fast-twister"
+import Twister from "./debug-twister"
+import { trace, logWrap } from "./trace"
 import { ERRORS, throwOnInvalidInteger } from "./errors"
 
 function Unusual(seed) {
@@ -13,12 +14,18 @@ function Unusual(seed) {
     let hash = 0
     seed.split("").forEach((c, i) => {
       hash = seed.charCodeAt(i) + (hash << 6) + (hash << 16) - hash
+      trace.constructor("hash", { hash, seedling })
       seedling += hash
     })
     this.seed += seedling
   }
+  trace.constructor("seed", this.seed)
   const twister = new Twister(this.seed)
-  const random = twister.random
+  const random = () => {
+    const value = twister.random()
+    trace.random("output", value)
+    return value
+  }
 
   function integer({ min, max }) {
     const test = [min, max]
@@ -46,7 +53,9 @@ function Unusual(seed) {
     return Math.floor(random() * x)
   }
   function floorMin(min, x) {
+    trace.floorMin("input", { min, x })
     const output = floor(x) + min
+    trace.floorMin("output", output)
     return output
   }
   function shuffle(list) {
@@ -62,13 +71,13 @@ function Unusual(seed) {
     return copy
   }
   this.random = random
-  this.integer = integer
-  this.pick = pick
-  this.pickKey = pickKey
-  this.pickValue = pickValue
-  this.floor = floor
+  this.integer = logWrap("integer", integer)
+  this.pick = logWrap("pick", pick)
+  this.pickKey = logWrap("pickKey", pickKey)
+  this.pickValue = logWrap("pickValue", pickValue)
+  this.floor = logWrap("floor", floor)
   this.floorMin = curry(floorMin)
-  this.shuffle = shuffle
+  this.shuffle = logWrap("shuffle", shuffle)
   return this
 }
 

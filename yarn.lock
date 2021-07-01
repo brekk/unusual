@@ -1937,11 +1937,6 @@ fast-levenshtein@^2.0.6:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
 
-fast-mersenne-twister@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/fast-mersenne-twister/-/fast-mersenne-twister-1.0.3.tgz#c2aeb1e7d906d1b5ab27c12b8bdeb4e3bf0d9881"
-  integrity sha512-fETiILfuW8QuH+eCpaFUGz8BOMA/+8IesWYoVeltuIzEvmq7qekuw1Kmpf3yjZcYwYZH3dNvYkc81+69/gCGhQ==
-
 fast.js@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/fast.js/-/fast.js-0.1.1.tgz#7c024d55ae144882fbcee44b79005fe2dcabd9fe"

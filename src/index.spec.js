@@ -10,13 +10,15 @@ const alphaObj = []
   .map((c, i) => [c, i])
   .reduce((agg, [c, i]) => Object.assign({}, agg, { [c]: i }))
 
-function testWithSeed(seed) {
+function testWithSeed([seed, seed2]) {
   describe("Unusual", () => {
     let M1
     let M2
+    let O1
     beforeAll(() => {
       M1 = new Unusual(seed)
       M2 = new Unusual(seed)
+      O1 = new Unusual(seed2)
     })
     test("integer", () => {
       const range = { min: -500, max: 500 }
@@ -36,7 +38,7 @@ function testWithSeed(seed) {
     })
     test("pickKey", () => {
       const x = M1.pickKey(alphaObj)
-      const y = M2.pickKey(alphaObj)
+      const y = O1.pickKey(alphaObj)
       expect(x).not.toEqual(y)
       expect(x).toMatchSnapshot()
       expect(y).toMatchSnapshot()
@@ -80,5 +82,4 @@ function testWithSeed(seed) {
   })
 }
 
-testWithSeed(SEEDS.ONE)
-testWithSeed(SEEDS.TWO)
+testWithSeed([SEEDS.ONE, SEEDS.TWO])

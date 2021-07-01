@@ -27,6 +27,14 @@
   "license": "ISC",
   "dependencies": {
     "envtrace": "^0.0.2",
-    "ramda": "^0.27.1"
-  }
+    "katsu-curry": "^0.7.8"
+  },
+  "private": false,
+  "keywords": [
+    "random",
+    "mersenne",
+    "mersenne twister",
+    "idempotent",
+    "utility"
+  ]
 }

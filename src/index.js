@@ -1,15 +1,14 @@
-// import Twister from "./twister"
-import { curry } from "ramda"
+import { curry } from "katsu-curry"
 import Twister from "./fast-twister"
-import { trace } from "./utils"
+import { trace, logWrap } from "./trace"
 import { ERRORS, throwOnInvalidInteger } from "./errors"
 
-function Unusual(seed = null) {
+function Unusual(seed) {
   if (!(this instanceof Unusual)) {
     // eslint-disable-next-line no-unused-vars
-    return new Unusual(seed)
+    return seed ? new Unusual(seed) : new Unusual()
   }
-  this.seed = 0
+  this.seed = Array.isArray(seed) || typeof seed === "number" ? seed : 0
   if (typeof seed === "string") {
     let seedling = 0
     let hash = 0
@@ -22,27 +21,24 @@ function Unusual(seed = null) {
   }
   trace.constructor("seed", this.seed)
   const twister = new Twister(this.seed)
-  const random = twister.random
+  const random = () => {
+    const value = twister.random()
+    trace.random("output", value)
+    return value
+  }
 
   function integer({ min, max }) {
-    trace.integer("input", { min, max })
     const test = [min, max]
     test.map(throwOnInvalidInteger)
     if (min > max) {
       throw new RangeError(ERRORS.MIN_UNDER_MAX)
     }
-    const result = Math.floor(random() * (max - min + 1) + min)
-    trace.integer("output", result)
-    return result
+    return Math.floor(random() * (max - min + 1) + min)
   }
   function pick(list) {
-    trace.pick("input", list)
     const max = list.length - 1
     const index = integer({ min: 0, max })
-    const picked = list[index]
-    trace.pick("output", picked)
-    trace.pick("LIST OUTPUT", list)
-    return picked
+    return list[index]
   }
 
   function pickKey(obj) {
@@ -57,7 +53,10 @@ function Unusual(seed = null) {
     return Math.floor(random() * x)
   }
   function floorMin(min, x) {
-    return floor(x) + min
+    trace.floorMin("input", { min, x })
+    const output = floor(x) + min
+    trace.floorMin("output", output)
+    return output
   }
   function shuffle(list) {
     const copy = [].concat(list)
@@ -72,13 +71,13 @@ function Unusual(seed = null) {
     return copy
   }
   this.random = random
-  this.integer = integer
-  this.pick = pick
-  this.pickKey = pickKey
-  this.pickValue = pickValue
-  this.floor = floor
+  this.integer = logWrap("integer", integer)
+  this.pick = logWrap("pick", pick)
+  this.pickKey = logWrap("pickKey", pickKey)
+  this.pickValue = logWrap("pickValue", pickValue)
+  this.floor = logWrap("floor", floor)
   this.floorMin = curry(floorMin)
-  this.shuffle = shuffle
+  this.shuffle = logWrap("shuffle", shuffle)
   return this
 }
 

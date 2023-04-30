@@ -3,25 +3,25 @@
 var katsuCurry = require('katsu-curry');
 var envtrace = require('envtrace');
 
-const trace = envtrace.complextrace("unusual", [
-  "constructor",
-  "twister",
-  "twisterTwist",
-  "twisterInitArray",
-  "twisterInitNumber",
-  "twisterInit",
-  "random",
-  "integer",
-  "pick",
-  "pickKey",
-  "pickValue",
-  "floor",
-  "floorMin",
-  "shuffle",
+const trace = envtrace.complextrace('unusual', [
+  'constructor',
+  'twister',
+  'twisterTwist',
+  'twisterInitArray',
+  'twisterInitNumber',
+  'twisterInit',
+  'random',
+  'integer',
+  'pick',
+  'pickKey',
+  'pickValue',
+  'floor',
+  'floorMin',
+  'shuffle',
 ]);
 
 const logWrap = katsuCurry.curry((key, fn, input) =>
-  katsuCurry.pipe(trace[key]("input"), fn, trace[key]("output"))(input)
+  katsuCurry.pipe(trace[key]('input'), fn, trace[key]('output'))(input)
 );
 
 // This is a nearly 1:1 port of fast-twister
@@ -123,7 +123,7 @@ const MATRIX_A = 0x9908b0df;
 const UPPER_MASK = 0x80000000;
 const LOWER_MASK = 0x7fffffff;
 
-const twist = logWrap("twisterTwist", function _twist(state) {
+const twist = logWrap('twisterTwist', function _twist(state) {
   let bits;
 
   for (let i = 0; i < DIFF; i++) {
@@ -142,7 +142,7 @@ const twist = logWrap("twisterTwist", function _twist(state) {
 });
 
 const initializeWithArray = logWrap(
-  "twisterInitArray",
+  'twisterInitArray',
   function _initializeWithArray(seedArray) {
     const state = initializeWithNumber(19650218);
     const len = seedArray.length;
@@ -191,7 +191,7 @@ const initializeWithArray = logWrap(
 );
 
 const initializeWithNumber = logWrap(
-  "twisterInitNumber",
+  'twisterInitNumber',
   function _initializeWithNumber(seed) {
     const state = new Array(N);
 
@@ -210,7 +210,7 @@ const initializeWithNumber = logWrap(
 );
 
 const initialize = logWrap(
-  "twisterInit",
+  'twisterInit',
   function _initialize(seed = Date.now()) {
     const state = Array.isArray(seed)
       ? initializeWithArray(seed)
@@ -218,7 +218,7 @@ const initialize = logWrap(
     return twist(state)
   }
 );
-const MersenneTwister = logWrap("twister", function _MersenneTwister(seed) {
+const MersenneTwister = logWrap('twister', function _MersenneTwister(seed) {
   let state = initialize(seed);
   let next = 0;
   const randomInt32 = () => {
@@ -266,9 +266,9 @@ const CONSTANTS = {
 };
 
 const ERRORS = {
-  TOO_BIG: "Number exceeds acceptable JavaScript integer size!",
-  TOO_SMALL: "Number is below acceptable JavaScript integer size!",
-  MIN_UNDER_MAX: "Minimum must be smaller than maximum!",
+  TOO_BIG: 'Number exceeds acceptable JavaScript integer size!',
+  TOO_SMALL: 'Number is below acceptable JavaScript integer size!',
+  MIN_UNDER_MAX: 'Minimum must be smaller than maximum!',
 };
 
 function throwOnInvalidInteger(x) {
@@ -280,10 +280,10 @@ function throwOnInvalidInteger(x) {
 
 function testValidInteger(x) {
   if (x > CONSTANTS.MAX_INT) {
-    return "TOO_BIG"
+    return 'TOO_BIG'
   }
   if (x < CONSTANTS.MIN_INT) {
-    return "TOO_SMALL"
+    return 'TOO_SMALL'
   }
   return false
 }
@@ -293,22 +293,22 @@ function Unusual(seed) {
     // eslint-disable-next-line no-unused-vars
     return seed ? new Unusual(seed) : new Unusual()
   }
-  this.seed = Array.isArray(seed) || typeof seed === "number" ? seed : 0;
-  if (typeof seed === "string") {
+  this.seed = Array.isArray(seed) || typeof seed === 'number' ? seed : 0;
+  if (typeof seed === 'string') {
     let seedling = 0;
     let hash = 0;
-    seed.split("").forEach((c, i) => {
+    seed.split('').forEach((c, i) => {
       hash = seed.charCodeAt(i) + (hash << 6) + (hash << 16) - hash;
-      trace.constructor("hash", { hash, seedling });
+      trace.constructor('hash', { hash, seedling });
       seedling += hash;
     });
     this.seed += seedling;
   }
-  trace.constructor("seed", this.seed);
+  trace.constructor('seed', this.seed);
   const twister = new MersenneTwister(this.seed);
   const random = () => {
     const value = twister.random();
-    trace.random("output", value);
+    trace.random('output', value);
     return value
   };
 
@@ -338,9 +338,9 @@ function Unusual(seed) {
     return Math.floor(random() * x)
   }
   function floorMin(min, x) {
-    trace.floorMin("input", { min, x });
+    trace.floorMin('input', { min, x });
     const output = floor(x) + min;
-    trace.floorMin("output", output);
+    trace.floorMin('output', output);
     return output
   }
   function shuffle(list) {
@@ -356,13 +356,13 @@ function Unusual(seed) {
     return copy
   }
   this.random = random;
-  this.integer = logWrap("integer", integer);
-  this.pick = logWrap("pick", pick);
-  this.pickKey = logWrap("pickKey", pickKey);
-  this.pickValue = logWrap("pickValue", pickValue);
-  this.floor = logWrap("floor", floor);
+  this.integer = logWrap('integer', integer);
+  this.pick = logWrap('pick', pick);
+  this.pickKey = logWrap('pickKey', pickKey);
+  this.pickValue = logWrap('pickValue', pickValue);
+  this.floor = logWrap('floor', floor);
   this.floorMin = katsuCurry.curry(floorMin);
-  this.shuffle = logWrap("shuffle", shuffle);
+  this.shuffle = logWrap('shuffle', shuffle);
   return this
 }
 

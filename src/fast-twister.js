@@ -102,7 +102,9 @@ function twist(state) {
 
   for (let i = 0; i < DIFF; i++) {
     bits = (state[i] & UPPER_MASK) | (state[i + 1] & LOWER_MASK)
+    // console.log(`${i}: ${bits} = (${state[i]} & ${UPPER_MASK}) | (${state[i + 1]} & ${LOWER_MASK})`)
     state[i] = state[i + M] ^ (bits >>> 1) ^ ((bits & 1) * MATRIX_A)
+    // console.log(`${i}: ${state[i]} = ${state[i + M]} ^ ${(bits >>> 1)} ^ ${((bits & 1) * MATRIX_A)})`)
   }
   for (let i = DIFF; i < N_MINUS_1; i++) {
     bits = (state[i] & UPPER_MASK) | (state[i + 1] & LOWER_MASK)
@@ -167,13 +169,16 @@ function initializeWithNumber(seed) {
   // fill initial state
   state[0] = seed
   for (let i = 1; i < N; i++) {
-    const s = state[i - 1] ^ (state[i - 1] >>> 30)
-    state[i] =
-      ((((s & 0xffff0000) >>> 16) * 1812433253) << 16) +
-      (s & 0x0000ffff) * 1812433253 +
-      i
+    const u = state[i - 1]
+    const s = u ^ (u >>> 30)
+    const t = s & 0xffff0000
+    const t16 = t >>> 16
+    const bigT16 = t16 * 1812433253
+    const bigT = bigT16 << 16
+    const hexS = s & 0x0000ffff
+    const nu = bigT + hexS * 1812433253 + i
+    state[i] = nu
   }
-
   return state
 }
 

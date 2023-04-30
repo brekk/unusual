@@ -1,29 +1,29 @@
-import { curry } from "katsu-curry"
-import Twister from "./debug-twister"
-import { trace, logWrap } from "./trace"
-import { ERRORS, throwOnInvalidInteger } from "./errors"
+import { curry } from 'katsu-curry'
+import Twister from './debug-twister'
+import { trace, logWrap } from './trace'
+import { ERRORS, throwOnInvalidInteger } from './errors'
 
 function Unusual(seed) {
   if (!(this instanceof Unusual)) {
     // eslint-disable-next-line no-unused-vars
     return seed ? new Unusual(seed) : new Unusual()
   }
-  this.seed = Array.isArray(seed) || typeof seed === "number" ? seed : 0
-  if (typeof seed === "string") {
+  this.seed = Array.isArray(seed) || typeof seed === 'number' ? seed : 0
+  if (typeof seed === 'string') {
     let seedling = 0
     let hash = 0
-    seed.split("").forEach((c, i) => {
+    seed.split('').forEach((c, i) => {
       hash = seed.charCodeAt(i) + (hash << 6) + (hash << 16) - hash
-      trace.constructor("hash", { hash, seedling })
+      trace.constructor('hash', { hash, seedling })
       seedling += hash
     })
     this.seed += seedling
   }
-  trace.constructor("seed", this.seed)
+  trace.constructor('seed', this.seed)
   const twister = new Twister(this.seed)
   const random = () => {
     const value = twister.random()
-    trace.random("output", value)
+    trace.random('output', value)
     return value
   }
 
@@ -53,9 +53,9 @@ function Unusual(seed) {
     return Math.floor(random() * x)
   }
   function floorMin(min, x) {
-    trace.floorMin("input", { min, x })
+    trace.floorMin('input', { min, x })
     const output = floor(x) + min
-    trace.floorMin("output", output)
+    trace.floorMin('output', output)
     return output
   }
   function shuffle(list) {
@@ -71,13 +71,13 @@ function Unusual(seed) {
     return copy
   }
   this.random = random
-  this.integer = logWrap("integer", integer)
-  this.pick = logWrap("pick", pick)
-  this.pickKey = logWrap("pickKey", pickKey)
-  this.pickValue = logWrap("pickValue", pickValue)
-  this.floor = logWrap("floor", floor)
+  this.integer = logWrap('integer', integer)
+  this.pick = logWrap('pick', pick)
+  this.pickKey = logWrap('pickKey', pickKey)
+  this.pickValue = logWrap('pickValue', pickValue)
+  this.floor = logWrap('floor', floor)
   this.floorMin = curry(floorMin)
-  this.shuffle = logWrap("shuffle", shuffle)
+  this.shuffle = logWrap('shuffle', shuffle)
   return this
 }
 

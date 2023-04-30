@@ -106,7 +106,9 @@ function twist(state) {
 
   for (let i = 0; i < DIFF; i++) {
     bits = (state[i] & UPPER_MASK) | (state[i + 1] & LOWER_MASK);
+    // console.log(`${i}: ${bits} = (${state[i]} & ${UPPER_MASK}) | (${state[i + 1]} & ${LOWER_MASK})`)
     state[i] = state[i + M] ^ (bits >>> 1) ^ ((bits & 1) * MATRIX_A);
+    // console.log(`${i}: ${state[i]} = ${state[i + M]} ^ ${(bits >>> 1)} ^ ${((bits & 1) * MATRIX_A)})`)
   }
   for (let i = DIFF; i < N_MINUS_1; i++) {
     bits = (state[i] & UPPER_MASK) | (state[i + 1] & LOWER_MASK);
@@ -171,13 +173,16 @@ function initializeWithNumber(seed) {
   // fill initial state
   state[0] = seed;
   for (let i = 1; i < N; i++) {
-    const s = state[i - 1] ^ (state[i - 1] >>> 30);
-    state[i] =
-      ((((s & 0xffff0000) >>> 16) * 1812433253) << 16) +
-      (s & 0x0000ffff) * 1812433253 +
-      i;
+    const u = state[i - 1];
+    const s = u ^ (u >>> 30);
+    const t = s & 0xffff0000;
+    const t16 = t >>> 16;
+    const bigT16 = t16 * 1812433253;
+    const bigT = bigT16 << 16;
+    const hexS = s & 0x0000ffff;
+    const nu = bigT + hexS * 1812433253 + i;
+    state[i] = nu;
   }
-
   return state
 }
 
@@ -235,9 +240,9 @@ const CONSTANTS = {
 };
 
 const ERRORS = {
-  TOO_BIG: "Number exceeds acceptable JavaScript integer size!",
-  TOO_SMALL: "Number is below acceptable JavaScript integer size!",
-  MIN_UNDER_MAX: "Minimum must be smaller than maximum!",
+  TOO_BIG: 'Number exceeds acceptable JavaScript integer size!',
+  TOO_SMALL: 'Number is below acceptable JavaScript integer size!',
+  MIN_UNDER_MAX: 'Minimum must be smaller than maximum!',
 };
 
 function throwOnInvalidInteger(x) {
@@ -249,10 +254,10 @@ function throwOnInvalidInteger(x) {
 
 function testValidInteger(x) {
   if (x > CONSTANTS.MAX_INT) {
-    return "TOO_BIG"
+    return 'TOO_BIG'
   }
   if (x < CONSTANTS.MIN_INT) {
-    return "TOO_SMALL"
+    return 'TOO_SMALL'
   }
   return false
 }
@@ -262,11 +267,11 @@ function Unusual(seed) {
     // eslint-disable-next-line no-unused-vars
     return seed ? new Unusual(seed) : new Unusual()
   }
-  this.seed = Array.isArray(seed) || typeof seed === "number" ? seed : 0;
-  if (typeof seed === "string") {
+  this.seed = Array.isArray(seed) || typeof seed === 'number' ? seed : 0;
+  if (typeof seed === 'string') {
     let seedling = 0;
     let hash = 0;
-    seed.split("").forEach((c, i) => {
+    seed.split('').forEach((c, i) => {
       hash = seed.charCodeAt(i) + (hash << 6) + (hash << 16) - hash;
       seedling += hash;
     });
@@ -283,9 +288,12 @@ function Unusual(seed) {
     }
     return Math.floor(random() * (max - min + 1) + min)
   }
+  function int(min) {
+    return max => integer({ min, max })
+  }
   function pick(list) {
     const max = list.length - 1;
-    const index = integer({ min: 0, max });
+    const index = int(0)(max);
     return list[index]
   }
 
@@ -318,6 +326,7 @@ function Unusual(seed) {
   }
   this.random = random;
   this.integer = integer;
+  this.int = int;
   this.pick = pick;
   this.pickKey = pickKey;
   this.pickValue = pickValue;

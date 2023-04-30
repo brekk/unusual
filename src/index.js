@@ -28,12 +28,12 @@ function Unusual(seed) {
     }
     return Math.floor(random() * (max - min + 1) + min)
   }
-  function int(min) {
-    return max => integer({ min, max })
-  }
+  const int = curry(function __int(min, max) {
+    return integer({ min, max })
+  })
   function pick(list) {
     const max = list.length - 1
-    const index = int(0)(max)
+    const index = int(0, max)
     return list[index]
   }
 

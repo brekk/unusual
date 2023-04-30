@@ -20,7 +20,7 @@
     "tsup": "^6.5.0"
   },
   "name": "unusual",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "simple idempotent randomness",
   "main": "unusual.js",
   "types": "unusual.d.ts",

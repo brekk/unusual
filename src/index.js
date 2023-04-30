@@ -1,17 +1,17 @@
-import { curry } from "katsu-curry"
-import Twister from "./fast-twister"
-import { ERRORS, throwOnInvalidInteger } from "./errors"
+import { curry } from 'katsu-curry'
+import Twister from './fast-twister'
+import { ERRORS, throwOnInvalidInteger } from './errors'
 
 function Unusual(seed) {
   if (!(this instanceof Unusual)) {
     // eslint-disable-next-line no-unused-vars
     return seed ? new Unusual(seed) : new Unusual()
   }
-  this.seed = Array.isArray(seed) || typeof seed === "number" ? seed : 0
-  if (typeof seed === "string") {
+  this.seed = Array.isArray(seed) || typeof seed === 'number' ? seed : 0
+  if (typeof seed === 'string') {
     let seedling = 0
     let hash = 0
-    seed.split("").forEach((c, i) => {
+    seed.split('').forEach((c, i) => {
       hash = seed.charCodeAt(i) + (hash << 6) + (hash << 16) - hash
       seedling += hash
     })
@@ -28,9 +28,12 @@ function Unusual(seed) {
     }
     return Math.floor(random() * (max - min + 1) + min)
   }
+  const int = curry(function __int(min, max) {
+    return integer({ min, max })
+  })
   function pick(list) {
     const max = list.length - 1
-    const index = integer({ min: 0, max })
+    const index = int(0, max)
     return list[index]
   }
 
@@ -63,6 +66,7 @@ function Unusual(seed) {
   }
   this.random = random
   this.integer = integer
+  this.int = int
   this.pick = pick
   this.pickKey = pickKey
   this.pickValue = pickValue

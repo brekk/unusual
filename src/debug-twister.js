@@ -1,4 +1,4 @@
-import { logWrap } from "./trace"
+import { logWrap } from './trace'
 // This is a nearly 1:1 port of fast-twister
 // A few small modifications were made, in order to:
 // 1. add conditional logging
@@ -98,7 +98,7 @@ const MATRIX_A = 0x9908b0df
 const UPPER_MASK = 0x80000000
 const LOWER_MASK = 0x7fffffff
 
-const twist = logWrap("twisterTwist", function _twist(state) {
+const twist = logWrap('twisterTwist', function _twist(state) {
   let bits
 
   for (let i = 0; i < DIFF; i++) {
@@ -117,7 +117,7 @@ const twist = logWrap("twisterTwist", function _twist(state) {
 })
 
 const initializeWithArray = logWrap(
-  "twisterInitArray",
+  'twisterInitArray',
   function _initializeWithArray(seedArray) {
     const state = initializeWithNumber(19650218)
     const len = seedArray.length
@@ -166,7 +166,7 @@ const initializeWithArray = logWrap(
 )
 
 const initializeWithNumber = logWrap(
-  "twisterInitNumber",
+  'twisterInitNumber',
   function _initializeWithNumber(seed) {
     const state = new Array(N)
 
@@ -185,7 +185,7 @@ const initializeWithNumber = logWrap(
 )
 
 const initialize = logWrap(
-  "twisterInit",
+  'twisterInit',
   function _initialize(seed = Date.now()) {
     const state = Array.isArray(seed)
       ? initializeWithArray(seed)
@@ -193,7 +193,7 @@ const initialize = logWrap(
     return twist(state)
   }
 )
-const MersenneTwister = logWrap("twister", function _MersenneTwister(seed) {
+const MersenneTwister = logWrap('twister', function _MersenneTwister(seed) {
   let state = initialize(seed)
   let next = 0
   const randomInt32 = () => {

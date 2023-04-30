@@ -1,4 +1,4 @@
-import Twister from "./fast-twister"
+import Twister from './fast-twister'
 
 const SEED = {
   ONE: 100,
@@ -12,27 +12,27 @@ function testWithSeed(seed) {
       TWIST = new Twister(seed)
     })
 
-    test("integer", () => {
+    test('integer', () => {
       const x = TWIST.randomNumber()
       expect(x).toMatchSnapshot()
     })
-    test("31 bit", () => {
+    test('31 bit', () => {
       const x = TWIST.random31Bit()
       expect(x).toMatchSnapshot()
     })
-    test("inclusive", () => {
+    test('inclusive', () => {
       const x = TWIST.randomInclusive()
       expect(x).toMatchSnapshot()
     })
-    test("random", () => {
+    test('random', () => {
       const x = TWIST.random()
       expect(x).toMatchSnapshot()
     })
-    test("exclusive", () => {
+    test('exclusive', () => {
       const x = TWIST.randomExclusive()
       expect(x).toMatchSnapshot()
     })
-    test("long", () => {
+    test('long', () => {
       const x = TWIST.random53Bit()
       expect(x).toMatchSnapshot()
     })

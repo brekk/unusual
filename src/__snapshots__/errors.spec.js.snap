@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constants 1`] = `
+{
+  "MIN_UNDER_MAX": "Minimum must be smaller than maximum!",
+  "TOO_BIG": "Number exceeds acceptable JavaScript integer size!",
+  "TOO_SMALL": "Number is below acceptable JavaScript integer size!",
+}
+`;

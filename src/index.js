@@ -76,4 +76,4 @@ function Unusual(seed) {
   return this
 }
 
-module.exports = Unusual
+export default Unusual

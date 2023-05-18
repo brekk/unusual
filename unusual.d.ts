@@ -2,6 +2,7 @@ export as namespace unusual
 
 export type UnusualInstance = {
   random: () => number
+  int: (min: number, max: number) => number
   integer: (x: { min: number; max: number }) => number
   pick: (a: any[]) => any
   pickKey: (a: Record<string, unknown>) => string
@@ -11,4 +12,4 @@ export type UnusualInstance = {
   shuffle: (a: any[]) => any[]
 }
 
-export function unusual(seed: string | number): UnusualInstance
+export function Unusual(seed: string | number): UnusualInstance

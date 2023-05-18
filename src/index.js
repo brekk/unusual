@@ -1,4 +1,5 @@
 import { curry } from 'katsu-curry'
+import { repeat } from './repeat'
 import Twister from './fast-twister'
 import { ERRORS, throwOnInvalidInteger } from './errors'
 
@@ -75,5 +76,6 @@ function Unusual(seed) {
   this.shuffle = shuffle
   return this
 }
+Unusual.repeat = repeat
 
 export default Unusual

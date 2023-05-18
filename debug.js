@@ -279,10 +279,10 @@ function throwOnInvalidInteger(x) {
 }
 
 function testValidInteger(x) {
-  if (x > CONSTANTS.MAX_INT) {
+  if (x >= CONSTANTS.MAX_INT) {
     return 'TOO_BIG'
   }
-  if (x < CONSTANTS.MIN_INT) {
+  if (x <= CONSTANTS.MIN_INT) {
     return 'TOO_SMALL'
   }
   return false

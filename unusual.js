@@ -2,6 +2,12 @@
 
 var katsuCurry = require('katsu-curry');
 
+const repeat = katsuCurry.curry((total, fn) =>
+  Array(total)
+    .fill(0)
+    .map((_, i) => fn(i))
+);
+
 // This is a nearly 1:1 port of fast-twister
 // A few small modifications were made, in order to:
 // 1. add conditional logging
@@ -253,10 +259,10 @@ function throwOnInvalidInteger(x) {
 }
 
 function testValidInteger(x) {
-  if (x > CONSTANTS.MAX_INT) {
+  if (x >= CONSTANTS.MAX_INT) {
     return 'TOO_BIG'
   }
-  if (x < CONSTANTS.MIN_INT) {
+  if (x <= CONSTANTS.MIN_INT) {
     return 'TOO_SMALL'
   }
   return false
@@ -335,5 +341,6 @@ function Unusual(seed) {
   this.shuffle = shuffle;
   return this
 }
+Unusual.repeat = repeat;
 
 module.exports = Unusual;

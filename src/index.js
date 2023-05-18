@@ -2,7 +2,9 @@ import { curry } from 'katsu-curry'
 import Twister from './fast-twister'
 import { ERRORS, throwOnInvalidInteger } from './errors'
 
-function Unusual(seed) {
+export { repeat } from './repeat'
+
+export function Unusual(seed) {
   if (!(this instanceof Unusual)) {
     // eslint-disable-next-line no-unused-vars
     return seed ? new Unusual(seed) : new Unusual()
@@ -75,5 +77,3 @@ function Unusual(seed) {
   this.shuffle = shuffle
   return this
 }
-
-module.exports = Unusual

@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Unusual.repeat 1`] = `
+[
+  "d",
+  "3",
+  "3",
+  "1",
+  "f",
+  "e",
+  "a",
+  "a",
+  "d",
+  "8",
+]
+`;

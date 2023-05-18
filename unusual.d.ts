@@ -11,5 +11,7 @@ export type UnusualInstance = {
   floorMin: (x: number, y: number) => number
   shuffle: (a: any[]) => any[]
 }
+export type IndexTransformer = (i: number) => any
 
 export function Unusual(seed: string | number): UnusualInstance
+export function repeat(total: number, fn: IndexTransformer): any[]

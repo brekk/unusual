@@ -3,13 +3,15 @@
 // 1. add conditional logging
 // 2. match existing lint / best-practices
 // 3. deal with ESM modules
-// The original license of fast-twister: https://gitlab.com/rockerest/fast-mersenne-twister/-/blob/master/LICENSE
+// The original license of fast-twister:
+// https://gitlab.com/rockerest/fast-mersenne-twister/-/blob/master/LICENSE
 // and it has been placed below for consistency
 /*
 -------------------------
 The below license is duplicated per the terms of the original software.
 
-Per http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/elicense.html, the Mersenne Twister has no usage restrictions.
+Per http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/elicense.html ,
+the Mersenne Twister has no usage restrictions.
 -------------------------
 
 Coded by Takuji Nishimura and Makoto Matsumoto.
@@ -102,9 +104,7 @@ function twist(state) {
 
   for (let i = 0; i < DIFF; i++) {
     bits = (state[i] & UPPER_MASK) | (state[i + 1] & LOWER_MASK)
-    // console.log(`${i}: ${bits} = (${state[i]} & ${UPPER_MASK}) | (${state[i + 1]} & ${LOWER_MASK})`)
     state[i] = state[i + M] ^ (bits >>> 1) ^ ((bits & 1) * MATRIX_A)
-    // console.log(`${i}: ${state[i]} = ${state[i + M]} ^ ${(bits >>> 1)} ^ ${((bits & 1) * MATRIX_A)})`)
   }
   for (let i = DIFF; i < N_MINUS_1; i++) {
     bits = (state[i] & UPPER_MASK) | (state[i + 1] & LOWER_MASK)

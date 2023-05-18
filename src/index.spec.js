@@ -1,4 +1,4 @@
-import Unusual from './index'
+import { Unusual } from './index'
 
 const SEEDS = {
   ONE: 'one',

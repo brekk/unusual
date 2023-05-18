@@ -4,13 +4,15 @@ import { logWrap } from './trace'
 // 1. add conditional logging
 // 2. match existing lint / best-practices
 // 3. deal with ESM modules
-// The original license of fast-twister: https://gitlab.com/rockerest/fast-mersenne-twister/-/blob/master/LICENSE
+// The original license of fast-twister:
+// https://gitlab.com/rockerest/fast-mersenne-twister/-/blob/master/LICENSE
 // and it has been placed below for consistency
 /*
 -------------------------
 The below license is duplicated per the terms of the original software.
 
-Per http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/elicense.html, the Mersenne Twister has no usage restrictions.
+Per http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/elicense.html ,
+the Mersenne Twister has no usage restrictions.
 -------------------------
 
 Coded by Takuji Nishimura and Makoto Matsumoto.

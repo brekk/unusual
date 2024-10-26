@@ -5,11 +5,10 @@ module.exports = {
     build: `nps rollup`,
     bundle: `nps build`,
     test: {
-      script: 'jest',
+      script: 'vitest --run',
       description: 'test stuff',
-      snapshot: 'nps "test -u"',
-      coverage: 'nps "test --coverage"'
+      snapshot: 'vitest -u',
     },
-    care: "nps lint test bundle"
-  }
+    care: 'nps lint test bundle',
+  },
 }

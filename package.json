@@ -44,5 +44,14 @@
     "unusual.js",
     "unusual.d.ts",
     "debug.js"
-  ]
+  ],
+  "scripts": {
+    "lint": "eslint src/*.js",
+    "rollup": "rollup -c rollup.config.js",
+    "build": "nps rollup",
+    "bundle": "nps build",
+    "test": "nps test",
+    "test:snapshot": "nps test.snapshot",
+    "care": "nps lint test bundle"
+  }
 }

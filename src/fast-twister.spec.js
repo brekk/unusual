@@ -1,3 +1,4 @@
+import { test, describe, beforeAll, expect } from 'vitest'
 import Twister from './fast-twister'
 
 const SEED = {

@@ -1,4 +1,16 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Twister with seed: 100 > 31 bit 1`] = `1441295756`;
+
+exports[`Twister with seed: 100 > exclusive 1`] = `0.42451759229879826`;
+
+exports[`Twister with seed: 100 > inclusive 1`] = `0.2783693827871162`;
+
+exports[`Twister with seed: 100 > integer 1`] = `2333906440`;
+
+exports[`Twister with seed: 100 > long 1`] = `0.5263824674842963`;
+
+exports[`Twister with seed: 100 > random 1`] = `0.4120463968720287`;
 
 exports[`Twister with seed: 100 31 bit 1`] = `1441295756`;
 
@@ -11,6 +23,18 @@ exports[`Twister with seed: 100 integer 1`] = `2333906440`;
 exports[`Twister with seed: 100 long 1`] = `0.5263824674842963`;
 
 exports[`Twister with seed: 100 random 1`] = `0.4120463968720287`;
+
+exports[`Twister with seed: 200 > 31 bit 1`] = `1061165364`;
+
+exports[`Twister with seed: 200 > exclusive 1`] = `0.5944201449165121`;
+
+exports[`Twister with seed: 200 > inclusive 1`] = `0.22654742380290932`;
+
+exports[`Twister with seed: 200 > integer 1`] = `4070049562`;
+
+exports[`Twister with seed: 200 > long 1`] = `0.25760976544252545`;
+
+exports[`Twister with seed: 200 > random 1`] = `0.1485590497031808`;
 
 exports[`Twister with seed: 200 31 bit 1`] = `1061165364`;
 

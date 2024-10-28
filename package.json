@@ -52,6 +52,7 @@
     "bundle": "nps build",
     "test": "nps test",
     "test:snapshot": "nps test.snapshot",
+    "test:types": "nps test.types",
     "care": "nps lint test bundle"
   }
 }

@@ -7,7 +7,7 @@ expectType<UnusualInstance>(u)
 
 expectType<number>(u.random())
 expectType<number>(u.integer({ min: 0, max: 10 }))
-expectType<string>(u.pick('alphabet'.split('')))
+expectType<string>(u.pick<string>('alphabet'.split('')))
 expectType<string>(u.pickKey({ a: 1, b: 2, c: 3 }))
 expectType<number>(u.pickValue<number>({ a: 1, b: 2, c: 3 }))
 expectType<number>(u.floor(1000))

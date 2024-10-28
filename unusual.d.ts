@@ -3,7 +3,7 @@ export as namespace unusual
 export type UnusualInstance = {
   random: () => number
   integer: (x: { min: number; max: number }) => number
-  pick: (a: any[]) => any
+  pick: <X>(a: X[]) => X
   pickKey: (a: Record<string, unknown>) => string
   pickValue: <X>(a: Record<string, X>) => X
   floor: (x: number) => number

@@ -8,6 +8,7 @@ module.exports = {
       script: 'vitest --run',
       description: 'test stuff',
       snapshot: 'vitest -u',
+      types: 'tsd',
     },
     care: 'nps lint test bundle',
   },
